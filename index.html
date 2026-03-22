@@ -199,7 +199,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 </style>
 </head>
 <body>
-<div id="loading-screen" class="loading-screen">
+<div id="loading-screen" style="display:none" class="loading-screen">
   <div style="font-family:var(--bebas);font-size:28px;color:var(--amber);letter-spacing:4px">GROUND ZERO</div>
   <div style="font-family:var(--playfair);font-size:13px;color:var(--text2);margin-top:6px;font-style:italic">Entering the Modern Era&#8230;</div>
   <div class="loading-bar-wrap"><div id="loading-bar" class="loading-bar-fill"></div></div>
@@ -229,23 +229,9 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div class="game-subtitle">Modern America &#8212; An Interactive History</div>
   <div class="game-unit-badge">Unit 8A &#183; Modern America</div>
   <div style="font-family:var(--dm);font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:1.5rem">CREATED BY JOSHUA OLSON</div>
-  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;max-width:300px;margin:0 auto">
-    <div id="returning-player-panel" style="display:none;background:var(--bg2);border:1px solid var(--green2);padding:16px;width:100%;text-align:center;margin-bottom:4px">
-      <div style="font-family:var(--dm);font-size:9px;color:var(--green2);letter-spacing:2px;margin-bottom:4px">WELCOME BACK</div>
-      <div id="returning-name" style="font-family:var(--bebas);font-size:22px;color:var(--cream);letter-spacing:2px"></div>
-      <div id="returning-info" style="font-family:var(--dm);font-size:10px;color:var(--text2);margin-top:4px"></div>
-      <button class="btn full green" onclick="continueGame()" style="margin-top:12px"><span>&#9654; CONTINUE</span></button>
-      <button class="btn full" onclick="startNewGame()" style="border-color:var(--border2);color:var(--text3);margin-top:6px;font-size:10px"><span>NEW / SWITCH PLAYER</span></button>
-    </div>
-    <div id="new-player-panel"><button class="btn full" onclick="startNewGame()"><span>Begin Your Journey</span></button></div>
-    <button class="btn full" style="border-color:var(--border2);color:var(--text2)" onclick="openLeaderboard()"><span>Leaderboard</span></button>
-    <div id="teacher-login-box" style="display:none;margin-top:8px">
-      <input id="teacher-code-input" type="password" maxlength="10" style="font-family:var(--bebas);font-size:16px;letter-spacing:3px;background:var(--bg2);border:1.5px solid var(--amber2);color:var(--cream);padding:10px 14px;width:100%;outline:none;text-align:center;text-transform:uppercase;margin-bottom:6px" placeholder="ENTER CODE" onkeydown="if(event.key==='Enter')submitTeacherCode()">
-      <button class="btn full" style="border-color:var(--amber2);color:var(--amber2)" onclick="submitTeacherCode()"><span>Login as Teacher</span></button>
-      <div id="teacher-code-err" style="font-family:var(--dm);font-size:10px;color:var(--red2);min-height:14px;margin-top:4px"></div>
-    </div>
-    <button class="btn full" style="border-color:var(--teal2);color:var(--teal2);font-size:11px;margin-top:6px" onclick="document.getElementById('teacher-login-box').style.display=document.getElementById('teacher-login-box').style.display==='none'?'block':'none'"><span>Teacher Login</span></button>
-  </div>
+  <div id="resume-slot"></div>
+  <button class="btn full green" onclick="showLoginGate()"><span>Enter Ground Zero ✦</span></button>
+  <button class="btn full" style="margin-top:6px;border-color:var(--border2);color:var(--text2)" onclick="showTeacherDashboard()"><span>📊 Teacher View</span></button>
   <div style="margin-top:24px;font-family:var(--dm);font-size:9px;color:var(--text3);letter-spacing:1px">FLORIDA EOC ALIGNED &#183; SS.912.A.7.15 &#183; SS.912.A.7.16 &#183; SS.912.A.7.17</div>
   <div style="margin-top:6px;font-family:var(--dm);font-size:10px;color:var(--text3);letter-spacing:1px">CREATED BY JOSHUA OLSON</div>
 </div>
@@ -385,6 +371,19 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   </div>
 </div>
 
+<!-- WELCOME GATE -->
+<div id="welcome-gate" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:1100;align-items:center;justify-content:center;">
+  <div style="background:var(--bg2);border:1px solid var(--amber2);padding:28px 24px;max-width:360px;width:100%;text-align:center">
+    <div style="margin:0 auto 12px;width:64px;height:64px" id="wg-avatar"></div>
+    <div style="font-family:var(--bebas);font-size:11px;color:var(--text3);letter-spacing:3px;margin-bottom:6px">WELCOME BACK</div>
+    <div style="font-family:var(--bebas);font-size:22px;color:var(--cream);letter-spacing:2px;margin-bottom:4px" id="wg-name"></div>
+    <div style="font-family:var(--dm);font-size:10px;color:var(--teal2);margin-bottom:4px" id="wg-detail"></div>
+    <div style="font-family:var(--dm);font-size:9px;color:var(--text3);margin-bottom:20px" id="wg-progress"></div>
+    <button class="btn full green" onclick="welcomeContinue()"><span>Continue as this student</span></button>
+    <button class="btn full" onclick="welcomeNewPlayer()" style="margin-top:8px;border-color:var(--border2);color:var(--text2);font-size:12px"><span>That’s not me — switch player</span></button>
+  </div>
+</div>
+
 <div id="code-gate-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:1000;align-items:center;justify-content:center;">
   <div style="background:var(--bg2);border:1px solid var(--border2);padding:24px;max-width:340px;width:90%;max-height:90vh;overflow-y:auto">
     <div style="font-family:var(--bebas);font-size:20px;color:var(--amber);letter-spacing:3px;margin-bottom:16px;text-align:center">JOIN THE GAME</div>
@@ -486,72 +485,56 @@ let _loginTeacher='',_loginPeriod='';
 
 // ── AVATAR SYSTEM ─────────────────────────────────────────────────────────
 const AVATARS=[
-  {id:'student_00s',label:'First Responder',badge:'&#128658;',unlockScore:0},
-  {id:'journalist_f',label:'War Correspondent',badge:'&#128240;',unlockScore:0},
-  {id:'soldier_iraq',label:'Iraq Veteran',badge:'&#127894;',unlockScore:0},
-  {id:'activist_m',label:'Community Organizer',badge:'&#9994;',unlockScore:0},
-  {id:'fema_worker',label:'Emergency Manager',badge:'&#127963;',unlockScore:500},
-  {id:'senator_av',label:'U.S. Senator',badge:'&#9878;',unlockScore:1200},
-  {id:'nypd_av',label:'NYPD Officer',badge:'&#128737;',unlockScore:2000},
-  {id:'reporter_av',label:'Investigative Reporter',badge:'&#128294;',unlockScore:3500},
-  {id:'bush_av',label:'Pres. Bush',badge:'&#127758;',unlockScore:5000},
-  {id:'obama_av',label:'Pres. Obama',badge:'&#11088;',unlockScore:7000},
+  {id:'scholar_f',     label:'The Scholar',      badge:'&#128218;',unlockScore:0},
+  {id:'activist_m',   label:'The Activist',      badge:'&#9994;',  unlockScore:0},
+  {id:'reporter_f',   label:'The Reporter',      badge:'&#128240;',unlockScore:0},
+  {id:'soldier_m',    label:'The Soldier',        badge:'&#127893;',unlockScore:0},
+  {id:'pioneer_f',    label:'The Pioneer',        badge:'&#9875;',  unlockScore:0},
+  {id:'worker_m_asian',label:'The Worker',        badge:'&#128296;',unlockScore:0},
+  {id:'mlk',          label:'Dr. King',           badge:'&#10022;', unlockScore:2000},
+  {id:'jfk',          label:'Pres. Kennedy',      badge:'&#127988;',unlockScore:1000},
+  {id:'fdr',          label:'Pres. Roosevelt',    badge:'&#127963;',unlockScore:1500},
+  {id:'rosa_parks',   label:'Rosa Parks',         badge:'&#128652;',unlockScore:800},
+  {id:'cesar_chavez', label:'C. Chavez',           badge:'&#9994;',  unlockScore:1200},
+  {id:'reagan',       label:'Pres. Reagan',        badge:'&#11088;', unlockScore:3000},
+  {id:'mr_olson',     label:'Mr. Olson',           badge:'&#127891;',unlockScore:5000},
 ];
-const STYLES={
-  student_00s:{skin:'#c49a6c',top:'#c03030',bot:'#1a1a1a',hair:'#2a1a00'},
-  journalist_f:{skin:'#8B5E3C',top:'#2a3a1a',bot:'#1a1a1a',hair:'#0d0505'},
-  soldier_iraq:{skin:'#b08060',top:'#3a4a20',bot:'#2a3010',hair:'#1a1000'},
-  activist_m:  {skin:'#3d1a0a',top:'#1a3a6b',bot:'#2d2d2d',hair:'#0a0500'},
-  fema_worker: {skin:'#c8a878',top:'#1a3a6b',bot:'#1a1a2a',hair:'#3a2800'},
-  senator_av:  {skin:'#c49a6c',top:'#1a2a5a',bot:'#1a1a2a',hair:'#2a1a00'},
-  nypd_av:     {skin:'#8B5E3C',top:'#1a1a3a',bot:'#1a1a2a',hair:'#1a0a00'},
-  reporter_av: {skin:'#c09060',top:'#2a3a1a',bot:'#1a1a1a',hair:'#3a2800'},
-  bush_av:     {skin:'#c8a878',top:'#2a3a5a',bot:'#1a1a2a',hair:'#3a2800'},
-  obama_av:    {skin:'#3d1a0a',top:'#1a2a5a',bot:'#1a1a2a',hair:'#0a0500'},
-};
-function makeAvatar(id,opts){
-  const s=STYLES[id]||STYLES.student_00s;
-  const hat=(opts&&opts.hat)||(G&&G.equippedHat)||null;
-  const shoes=(opts&&opts.shoes)||(G&&G.equippedShoes)||null;
-  const acc=(opts&&opts.acc)||(G&&G.equippedAcc)||null;
-  const outfitColors={casual:null,uniform:'#c03030',fatigues:'#3a4a20',press:'#2a3a1a',suit:'#1a2a5a',scholar:'#2a1a5a'};
-  const topColor=(G&&outfitColors[G.outfitId])||s.top;
-  const hatLayers={
-    hat_hardhat:'<rect x="12" y="1" width="16" height="6" rx="3" fill="#e07020"/><rect x="10" y="6" width="20" height="2" fill="#b85a10"/>',
-    hat_nypd:'<rect x="13" y="0" width="14" height="5" rx="1" fill="#1a1a3a"/><rect x="11" y="4" width="18" height="2" fill="#1a1a3a"/><rect x="18" y="1" width="4" height="2" fill="#e8d050"/>',
-    hat_fedora:'<rect x="13" y="0" width="14" height="5" fill="#2a1a0a"/><rect x="11" y="4" width="18" height="2" fill="#2a1a0a"/>',
-    hat_beret:'<ellipse cx="20" cy="4" rx="9" ry="4" fill="#2a3a1a"/><ellipse cx="22" cy="4" rx="3" ry="2" fill="#1a2a10"/>',
-    hat_crown:'<polygon points="14,5 17,0 20,4 23,0 26,5" fill="#e07020"/><rect x="13" y="4" width="14" height="3" fill="#b85a10"/>',
+// ── MEDALLION PORTRAIT SYSTEM ─────────────────────────────────────────────────────────────
+function svgMedallion(bg,ring,face,size){size=size||44;return `<svg viewBox="0 0 40 40" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:50%;overflow:visible"><circle cx="20" cy="20" r="19.5" fill="${ring}"/><circle cx="20" cy="20" r="17.5" fill="${darkenRing(ring)}"/><circle cx="20" cy="20" r="15.5" fill="${bg}"/>${face}<circle cx="20" cy="20" r="15.5" fill="none" stroke="${ring}" stroke-width=".35" opacity=".5"/></svg>`;}
+function darkenRing(c){var m={"#c9a84c":"#a8863a","#208878":"#156658","#7a2010":"#4a1008","#2a4a8a":"#1a3060","#6a4a20":"#4a3010","#c07818":"#905010","#8b2020":"#5a1010"};return m[c]||"#0a0808";}
+function faceBase(skin,eyes,hair,outfit,extra){extra=extra||"";return `<circle cx="20" cy="17" r="6" fill="${skin}"/><ellipse cx="20" cy="26" rx="8.5" ry="5.5" fill="${outfit}"/><rect x="13" y="21" width="14" height="8" fill="${outfit}"/><ellipse cx="17.5" cy="16" rx="1.1" ry="1.4" fill="${eyes}"/><ellipse cx="22.5" cy="16" rx="1.1" ry="1.4" fill="${eyes}"/>${hair}${extra}`;}
+function hairShort(c,y){y=y||12;return `<ellipse cx="20" cy="${y}" rx="6" ry="3.5" fill="${c}"/>`;}
+function hairLong(c){return `<ellipse cx="20" cy="11" rx="6" ry="4" fill="${c}"/><path d="M14 14 Q12 20 14 25" fill="none" stroke="${c}" stroke-width="2.5"/><path d="M26 14 Q28 20 26 25" fill="none" stroke="${c}" stroke-width="2.5"/>`;}
+function hairBun(c){return `<ellipse cx="20" cy="11.5" rx="5.5" ry="3" fill="${c}"/><circle cx="20" cy="9.5" r="2.5" fill="${c}"/>`;}
+function hairAfro(c){return `<ellipse cx="20" cy="10" rx="8" ry="6" fill="${c}"/>`;}
+function hairStraightLong(c){return `<ellipse cx="20" cy="11" rx="6.5" ry="4" fill="${c}"/><path d="M13.5 14 Q12 22 13.5 27" fill="none" stroke="${c}" stroke-width="3"/><path d="M26.5 14 Q28 22 26.5 27" fill="none" stroke="${c}" stroke-width="3"/>`;}
+function hatTop(c){return `<rect x="15" y="5.5" width="10" height="9" rx=".8" fill="${c}"/><rect x="12" y="14" width="16" height="2" rx=".5" fill="${c}"/>`;}
+function hatMilitary(c){return `<ellipse cx="20" cy="12" rx="6.5" ry="3.5" fill="${c}"/><rect x="16" y="8" width="8" height="4.5" rx=".5" fill="${c}"/>`;}
+function hatCowboy(c){return `<ellipse cx="20" cy="12.5" rx="6" ry="3.2" fill="${c}"/><rect x="16" y="9" width="8" height="4" rx=".5" fill="${c}"/><path d="M13 13 Q12 15 14 16" fill="none" stroke="${c}" stroke-width="2"/><path d="M27 13 Q28 15 26 16" fill="none" stroke="${c}" stroke-width="2"/>`;}
+function glassesDetail(){return `<rect x="14.5" y="14" width="4" height="3.5" rx="1.5" fill="none" stroke="#2a1a0a" stroke-width=".9"/><rect x="21.5" y="14" width="4" height="3.5" rx="1.5" fill="none" stroke="#2a1a0a" stroke-width=".9"/><line x1="18.5" y1="15.5" x2="21.5" y2="15.5" stroke="#2a1a0a" stroke-width=".8"/>`;}
+function beardDetail(c,op){op=op||1;return `<path d="M15 20 Q16 24 20 25 Q24 24 25 20" fill="${c}" opacity="${op}"/>`;}
+function getPortraitSVG(charId,size){
+  size=size||44;
+  var p={
+    scholar_f:    ()=>svgMedallion('#0d1a2e','#c9a84c',faceBase('#f0c8a0','#1a1a1a',hairLong('#3a2010'),'#1a3060','<rect x="22" y="19" width="5" height="7" rx=".5" fill="#f5ead8" opacity=".8"/>'),size),
+    activist_m:   ()=>svgMedallion('#100808','#c9a84c',faceBase('#a06040','#1a1a1a',hairAfro('#1a0a0a'),'#3a0a0a','<rect x="13" y="17" width="5" height="8" rx="2" fill="#a06040" opacity=".7"/>'),size),
+    reporter_f:   ()=>svgMedallion('#0a0c08','#c9a84c',faceBase('#8a5530','#0a0a0a',hairStraightLong('#2a1a0a'),'#1a2a1a','<rect x="14" y="8" width="12" height="9" rx="1" fill="#f5ead8" opacity=".85"/><rect x="15" y="9.5" width="9" height="1" fill="#1a1a1a" opacity=".5"/>'),size),
+    soldier_m:    ()=>svgMedallion('#2a3a1a','#c9a84c',faceBase('#d4a870','#1a1a0a',hatMilitary('#556644'),'#3a4a2a',beardDetail('#a07040',.35)),size),
+    pioneer_f:    ()=>svgMedallion('#0c0a06','#c9a84c',faceBase('#c89870','#2a1a0a',hatCowboy('#8b4513'),'#5a3010',''),size),
+    worker_m_asian:()=>svgMedallion('#080a0a','#c9a84c',faceBase('#d4b080','#1a0a00',hatMilitary('#555544'),'#1a1a1a','<rect x="14" y="22" width="12" height="1.5" rx=".5" fill="#c9a84c"/>'),size),
+    mlk:          ()=>svgMedallion('#040810','#c9a84c',faceBase('#7a4020','#1a0a00',hairShort('#2a1a0a'),'#00205b','<rect x="14" y="22" width="12" height="1.5" rx=".5" fill="#c9a84c"/>'),size),
+    rosa_parks:   ()=>svgMedallion('#060810','#c9a84c',faceBase('#7a4828','#0a0a0a',hairBun('#1a1a1a'),'#1a0a0a',''),size),
+    cesar_chavez: ()=>svgMedallion('#060808','#c9a84c',faceBase('#b07040','#1a0a00',hairShort('#1a0808'),'#1a0a0a',''),size),
+    jfk:          ()=>svgMedallion('#06080e','#c9a84c',faceBase('#d4b080','#1a1a0a',hairShort('#6b4520'),'#00205b',''),size),
+    fdr:          ()=>svgMedallion('#060810','#c9a84c',faceBase('#e8c8a0','#2a1a0a',hairShort('#6b4520'),'#00205b',glassesDetail()),size),
+    reagan:       ()=>svgMedallion('#08080c','#c9a84c',faceBase('#e8c8a0','#1a1a0a',hairShort('#3a2010'),'#8b0000',''),size),
+    mr_olson:     ()=>svgMedallion('#0a0c14','#c9a84c',`<ellipse cx="11.5" cy="17" rx="2" ry="2.8" fill="#c8956a"/><ellipse cx="28.5" cy="17" rx="2" ry="2.8" fill="#c8956a"/><circle cx="20" cy="15" r="7.5" fill="#c8956a"/><ellipse cx="20" cy="27" rx="9.5" ry="6" fill="#1a2a3a"/><rect x="12.5" y="22" width="15" height="9" fill="#1a2a3a"/><rect x="16" y="21.5" width="8" height="3.5" fill="#f0f0f0"/><rect x="13.8" y="11.5" width="5.6" height="4.8" rx="1.6" fill="none" stroke="#1a0800" stroke-width="1.2"/><rect x="20.6" y="11.5" width="5.6" height="4.8" rx="1.6" fill="none" stroke="#1a0800" stroke-width="1.2"/><line x1="19.4" y1="13.7" x2="20.6" y2="13.7" stroke="#1a0800" stroke-width=".9"/><ellipse cx="16.8" cy="14" rx="1.1" ry="1.2" fill="#1a0a00"/><ellipse cx="23.2" cy="14" rx="1.1" ry="1.2" fill="#1a0a00"/><path d="M17 18.5 Q20 19.5 23 18.5" stroke="#a07040" stroke-width=".8" fill="none"/>`,size),
   };
-  const shoeColor={shoes_dress:'#1a1a1a',shoes_boots:'#3a2010',shoes_gold:'#e07020',shoes_sport:'#e8e8e8'}[shoes]||'#1a1a1a';
-  const accLayers={
-    acc_camera:'<rect x="2" y="18" width="8" height="6" rx="1" fill="#2a2a2a" stroke="#4a4a4a" stroke-width="0.5"/><circle cx="6" cy="21" r="2" fill="#1a1a1a" stroke="#4a4a4a" stroke-width="0.5"/>',
-    acc_protest_sign:'<rect x="4" y="14" width="1.5" height="16" fill="#5a3810"/><rect x="5" y="14" width="8" height="6" fill="#e8dcc8"/><rect x="6" y="15" width="6" height="1" fill="#c03030"/><rect x="6" y="17" width="6" height="1" fill="#c03030"/>',
-    acc_briefcase:'<rect x="2" y="20" width="8" height="6" rx="1" fill="#3a2010" stroke="#5a3010" stroke-width="0.5"/><rect x="4" y="19" width="4" height="2" fill="#5a3010"/>',
-    acc_notepad:'<rect x="3" y="16" width="7" height="10" rx="1" fill="#e8dcc8" stroke="#c8a878" stroke-width="0.5"/><rect x="4" y="18" width="5" height="1" fill="#7a7268"/><rect x="4" y="20" width="5" height="1" fill="#7a7268"/><rect x="4" y="22" width="3" height="1" fill="#7a7268"/>',
-  };
-  return '<svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;image-rendering:pixelated">'
-    +'<rect x="14" y="2" width="12" height="12" fill="'+s.skin+'"/>'
-    +'<rect x="12" y="4" width="2" height="8" fill="'+s.skin+'"/>'
-    +'<rect x="26" y="4" width="2" height="8" fill="'+s.skin+'"/>'
-    +'<rect x="15" y="0" width="10" height="5" fill="'+s.hair+'"/>'
-    +'<rect x="14" y="2" width="2" height="3" fill="'+s.hair+'"/>'
-    +'<rect x="24" y="2" width="2" height="3" fill="'+s.hair+'"/>'
-    +(hat&&hatLayers[hat]?hatLayers[hat]:'')
-    +'<rect x="16" y="8" width="2" height="2" fill="#1a0a00" opacity="0.8"/>'
-    +'<rect x="22" y="8" width="2" height="2" fill="#1a0a00" opacity="0.8"/>'
-    +'<rect x="17" y="11" width="6" height="1" fill="#8b3a2a" opacity="0.7"/>'
-    +'<rect x="11" y="14" width="18" height="14" fill="'+topColor+'"/>'
-    +'<rect x="8" y="14" width="4" height="12" fill="'+s.skin+'"/>'
-    +'<rect x="28" y="14" width="4" height="12" fill="'+s.skin+'"/>'
-    +'<rect x="13" y="28" width="7" height="14" fill="'+s.bot+'"/>'
-    +'<rect x="20" y="28" width="7" height="14" fill="'+s.bot+'"/>'
-    +'<rect x="12" y="40" width="8" height="4" fill="'+(shoes?shoeColor:'#1a1a1a')+'"/>'
-    +'<rect x="20" y="40" width="8" height="4" fill="'+(shoes?shoeColor:'#1a1a1a')+'"/>'
-    +(acc&&accLayers[acc]?accLayers[acc]:'')
-    +'</svg>';
+  var fn=p[charId]||p['scholar_f'];
+  return fn?fn():p['scholar_f']();
 }
-function renderAvatar(size){size=size||44;return '<div style="width:'+size+'px;height:'+size+'px">'+makeAvatar(G&&G.avatarId||'student_00s')+'</div>';}
+function renderAvatar(size){return getPortraitSVG(G&&G.avatarId||'scholar_f',size||44);}
+
 
 // ── SCENES ────────────────────────────────────────────────────────────────
 const SCENES={
@@ -1072,15 +1055,20 @@ const EOC_POOL=[
 ];
 
 // ── SAVE / LOAD ───────────────────────────────────────────────────────────
-function newGame(){return{name:'',period:'',teacher:'',avatarId:'student_00s',outfitId:'casual',score:0,level:1,momentum:100,maxMomentum:100,correctAnswers:0,totalAnswers:0,completedChapters:[],unlockedCards:[],earnedBadges:[],unlockedOutfits:['casual'],gold:0,chapterReports:{},createdAt:Date.now(),equippedHat:null,equippedShoes:null,equippedAcc:null,shopOwned:[],isTeacher:false,_completionShown:false};}
+function newGame(){return{name:'',period:'',teacher:'',avatarId:'scholar_f',outfitId:'casual',score:0,level:1,momentum:100,maxMomentum:100,correctAnswers:0,totalAnswers:0,chaptersCompleted:[],unlockedCards:[],earnedBadges:[],unlockedOutfits:['casual'],gold:0,chapterReports:{},createdAt:Date.now(),equippedHat:null,equippedShoes:null,equippedAcc:null,shopOwned:[],isTeacher:false,_completionShown:false};}
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
 function load(){try{const d=localStorage.getItem(SAVE_KEY);if(d){G=JSON.parse(d);return true;}}catch(e){}return false;}
+function saveGame(){save();}
+function loadGame(){return load()&&G&&G.name?G:null;}
 
 // ── SHELL INTEGRATION ─────────────────────────────────────────────────────
-function getShellProfile(){try{const raw=localStorage.getItem(SHELL_KEY);if(!raw)return null;const p=JSON.parse(raw);if(p&&p.name&&p.name!=='Guest'&&p.setupDone)return p;}catch(e){}return null;}
+function getShellProfile(){try{const raw=localStorage.getItem(SHELL_KEY);if(!raw)return null;const p=JSON.parse(raw);if(p&&p.name&&p.name!=='Guest')return p;}catch(e){}return null;}
 function notifyShellComplete(){try{const raw=localStorage.getItem(SHELL_KEY);if(!raw)return;const s=JSON.parse(raw);if(!s.unitsCompleted)s.unitsCompleted=[];if(!s.unitsCompleted.includes(SHELL_UNIT_ID))s.unitsCompleted.push(SHELL_UNIT_ID);localStorage.setItem(SHELL_KEY,JSON.stringify(s));}catch(e){}}
 function returnToShell(){window.location.href='https://olsonjoshua-code.github.io/American-Chronicles-Shell/';}
-function applyShellProfile(profile){G=newGame();G.name=profile.name;G.period=profile.period?('shell-'+profile.period):'shell-0';G.teacher='shell';G.isTeacher=profile.isTeacher||false;const avatarMap={scholar:'student_00s',rebel:'activist_m',soldier:'soldier_iraq',reporter:'journalist_f',pioneer:'student_00s',diplomat:'senator_av',worker:'fema_worker',artist:'journalist_f'};G.avatarId=avatarMap[profile.avatar]||'student_00s';save();}
+const SHELL_AVATAR_MAP={scholar:'scholar_f',rebel:'activist_m',soldier:'soldier_m',reporter:'reporter_f',pioneer:'pioneer_f',diplomat:'jfk',worker:'worker_m_asian',artist:'reporter_f'};
+function shellToAvatar(key){return SHELL_AVATAR_MAP[key]||'student_00s';}
+
+function applyShellProfile(profile){G=newGame();G.name=profile.name;G.period=profile.period?('shell-'+profile.period):'shell-0';G.teacher='shell';G.isTeacher=profile.isTeacher||false;G.avatarId=shellToAvatar(profile.avatar)||'scholar_f';G.shellLinked=true;save();}
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
@@ -1089,7 +1077,14 @@ function notify(msg,type){document.querySelectorAll('.notif').forEach(n=>n.remov
 
 // ── LOGIN FLOW ────────────────────────────────────────────────────────────
 function goToStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('login-step-'+i);if(el)el.style.display=i===n?'block':'none';});}
-function startNewGame(){goToStep(1);document.getElementById('code-gate-overlay').style.display='flex';}
+function startNewGame(){showLoginGate();}
+function showTeacherDashboard(){
+  const pw=prompt('Enter teacher code:');if(!pw)return;
+  let found=null;for(const[k,t]of Object.entries(TEACHERS)){if(pw.toUpperCase()===t.teacherCode){found=k;break;}}
+  if(!found){alert('Incorrect code.');return;}
+  document.getElementById('teacher-dashboard').classList.add('show');
+  loadTeacherData();
+}
 function selectTeacher(key){
   if(key==='guest'){_loginTeacher='guest';_loginPeriod='guest';const lbl=document.getElementById('login-step3-label');if(lbl)lbl.textContent='Playing as guest.';const inp=document.getElementById('class-code-input');if(inp)inp.value='';goToStep(3);return;}
   const t=TEACHERS[key];if(!t)return;_loginTeacher=key;
@@ -1103,7 +1098,7 @@ function submitClassCode(){
   if(!name){if(errEl)errEl.textContent='Please enter your name.';return;}
   document.getElementById('code-gate-overlay').style.display='none';
   G=newGame();G.name=name;G.period=_loginPeriod;G.teacher=_loginTeacher;G.isTeacher=false;
-  renderAvatarGrid();renderOutfitGridCreator();updateCharPreview();showScreen('char-screen');
+  save();showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);notify('Welcome, '+G.name+'!','green');
 }
 function submitTeacherCode(){
   const input=document.getElementById('teacher-code-input');const errEl=document.getElementById('teacher-code-err');
@@ -1113,25 +1108,25 @@ function submitTeacherCode(){
   else{if(errEl)errEl.textContent='Incorrect code.';if(input){input.style.borderColor='#e04040';setTimeout(()=>{input.style.borderColor='var(--border2)';},1500);}}
 }
 function continueGame(){if(load()&&G&&G.name){showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);}}
-function playAgain(){if(!confirm('Begin a new journey from Chapter 1? Score, gold, cards, and badges are kept.'))return;G.completedChapters=[];G._completionShown=false;save();renderHub();showScreen('hub-screen');setActiveNav(0);notify('New journey started!','green');}
+function playAgain(){if(!confirm('Begin a new journey from Chapter 1? Score, gold, cards, and badges are kept.'))return;G.chaptersCompleted=[];G._completionShown=false;save();renderHub();showScreen('hub-screen');setActiveNav(0);notify('New journey started!','green');}
 
 // ── CHARACTER CREATION ─────────────────────────────────────────────────────
 function renderAvatarGrid(){
   if(!G)return;const grid=document.getElementById('avatar-grid');if(!grid)return;
   grid.innerHTML=AVATARS.map(av=>{const unlocked=!av.unlockScore||(G.score||0)>=av.unlockScore;const selected=G.avatarId===av.id;
-    return '<div class="avatar-opt '+(selected?'selected ':'')+(unlocked?'':'locked')+'" onclick="'+(unlocked?'selectAvatar(\''+av.id+'\')':'')+'"><div style="width:44px;height:44px">'+makeAvatar(av.id)+'</div><div class="avatar-opt-label">'+av.badge+' '+av.label+'</div>'+(unlocked?'':'<div style="font-family:var(--dm);font-size:6px;color:var(--amber2)">&#128274; '+av.unlockScore+'</div>')+'</div>';}).join('');
+    return '<div class="avatar-opt '+(selected?'selected ':'')+(unlocked?'':'locked')+'" onclick="'+(unlocked?'selectAvatar(\''+av.id+'\')':'')+'"><div style="width:44px;height:44px">'+getPortraitSVG(av.id,44)+'</div><div class="avatar-opt-label">'+av.badge+' '+av.label+'</div>'+(unlocked?'':'<div style="font-family:var(--dm);font-size:6px;color:var(--amber2)">&#128274; '+av.unlockScore+'</div>')+'</div>';}).join('');
 }
 function selectAvatar(id){G.avatarId=id;renderAvatarGrid();updateCharPreview();}
 function updateCharPreview(){
   const ni=document.getElementById('name-input');if(ni&&G)G.name=ni.value;
   const name=(ni?ni.value:'')||'Your Name';document.getElementById('char-preview-name').textContent=name;
-  const av=AVATARS.find(a=>a.id===(G?G.avatarId:'student_00s'));
-  document.getElementById('char-preview-avatar').innerHTML=av?makeAvatar(av.id):'';
+  const av=AVATARS.find(a=>a.id===(G?G.avatarId:'scholar_f'));
+  document.getElementById('char-preview-avatar').innerHTML=getPortraitSVG(G?G.avatarId:'scholar_f',100);
   document.getElementById('char-preview-title').textContent=(av?av.label:'First Responder')+' \u00b7 Period '+(G?G.period:'?');
 }
 function renderOutfitGridCreator(){
   if(!G)return;const grid=document.getElementById('outfit-grid-creator');if(!grid)return;
-  grid.innerHTML=OUTFITS.map(o=>{const locked=(o.unlockChapter&&!(G.completedChapters||[]).includes(o.unlockChapter))||(o.unlockChapters&&(G.completedChapters||[]).length<o.unlockChapters);return '<div class="outfit-opt '+(G.outfitId===o.id?'selected ':'')+(locked?'locked':'')+'" onclick="selectOutfit(\''+o.id+'\')"><div class="outfit-icon">'+o.icon+'</div><div class="outfit-name">'+o.name+'</div><div class="outfit-cost">'+(locked?'&#128274; Locked':(o.cost>0?'&#11088; '+o.cost:'FREE'))+'</div></div>';}).join('');
+  grid.innerHTML=OUTFITS.map(o=>{const locked=(o.unlockChapter&&!(G.chaptersCompleted||[]).includes(o.unlockChapter))||(o.unlockChapters&&(G.chaptersCompleted||[]).length<o.unlockChapters);return '<div class="outfit-opt '+(G.outfitId===o.id?'selected ':'')+(locked?'locked':'')+'" onclick="selectOutfit(\''+o.id+'\')"><div class="outfit-icon">'+o.icon+'</div><div class="outfit-name">'+o.name+'</div><div class="outfit-cost">'+(locked?'&#128274; Locked':(o.cost>0?'&#11088; '+o.cost:'FREE'))+'</div></div>';}).join('');
 }
 function selectOutfit(id){G.outfitId=id;renderOutfitGridCreator();updateCharPreview();}
 function confirmCharacter(){
@@ -1167,11 +1162,11 @@ function renderHub(){
   document.getElementById('hub-score-display').textContent=(G.score||0).toLocaleString();
   document.getElementById('hub-momentum-fill').style.width=((G.momentum||100)/(G.maxMomentum||100)*100)+'%';
   document.getElementById('hub-momentum-text').textContent='Momentum: '+(G.momentum||100)+' / '+(G.maxMomentum||100);
-  const jb=document.getElementById('journey-banner');if(jb)jb.style.display=(G.completedChapters||[]).length>=CHAPTERS.length?'block':'none';
+  const jb=document.getElementById('journey-banner');if(jb)jb.style.display=(G.chaptersCompleted||[]).length>=CHAPTERS.length?'block':'none';
   document.getElementById('badges-row').innerHTML=BADGES.map(b=>{const earned=(G.earnedBadges||[]).includes(b.id);return '<div class="badge-pill '+(earned?'earned':'')+'" title="'+b.desc+'"><span class="badge-icon">'+b.icon+'</span><span>'+b.name+'</span></div>';}).join('');
   document.getElementById('unit-list').innerHTML=CHAPTERS.map((ch,idx)=>{
-    const completed=(G.completedChapters||[]).includes(ch.id);
-    const prevDone=idx===0||(G.completedChapters||[]).includes(CHAPTERS[idx-1]&&CHAPTERS[idx-1].id);
+    const completed=(G.chaptersCompleted||[]).includes(ch.id);
+    const prevDone=idx===0||(G.chaptersCompleted||[]).includes(CHAPTERS[idx-1]&&CHAPTERS[idx-1].id);
     const available=prevDone&&!completed;
     const sc=completed?'completed':(available?'available':'locked');
     const st=completed?'COMPLETED':(available?'PLAY':'LOCKED');
@@ -1184,8 +1179,8 @@ function confirmBackToHub(){if(confirm('Return to hub? Progress in this beat is 
 // ── CHAPTER FLOW ──────────────────────────────────────────────────────────
 function openChapter(idx){
   const ch=CHAPTERS[idx];
-  const completed=(G.completedChapters||[]).includes(ch.id);
-  const prevDone=idx===0||(G.completedChapters||[]).includes(CHAPTERS[idx-1]&&CHAPTERS[idx-1].id);
+  const completed=(G.chaptersCompleted||[]).includes(ch.id);
+  const prevDone=idx===0||(G.chaptersCompleted||[]).includes(CHAPTERS[idx-1]&&CHAPTERS[idx-1].id);
   if(completed||!prevDone)return;
   currentChapterIdx=idx;
   document.getElementById('chapter-num-display').textContent='CHAPTER '+ch.num;
@@ -1252,8 +1247,8 @@ function nextStoryBeat(){const ch=CHAPTERS[currentChapterIdx];currentBeatIdx++;i
 function completeChapter(){
   const ch=CHAPTERS[currentChapterIdx];
   const missedCount=chapterTotal-chapterCorrect;
-  if(!(G.completedChapters||[]).includes(ch.id)){
-    if(!G.completedChapters)G.completedChapters=[];G.completedChapters.push(ch.id);
+  if(!(G.chaptersCompleted||[]).includes(ch.id)){
+    if(!G.chaptersCompleted)G.chaptersCompleted=[];G.chaptersCompleted.push(ch.id);
     const bonus=Math.round((chapterCorrect/Math.max(chapterTotal,1))*300);G.score=(G.score||0)+bonus;chapterScore+=bonus;
     if(ch.badge&&!(G.earnedBadges||[]).includes(ch.badge)){if(!G.earnedBadges)G.earnedBadges=[];G.earnedBadges.push(ch.badge);}
     if(ch.cardEarned&&missedCount<=1&&!(G.unlockedCards||[]).includes(ch.cardEarned)){if(!G.unlockedCards)G.unlockedCards=[];G.unlockedCards.push(ch.cardEarned);}
@@ -1286,20 +1281,20 @@ function closeChapterComplete(){document.getElementById('chapter-complete-overla
 function checkLevelUp(){const nr=getRank();if(nr.level>(G.level||1)){G.level=nr.level;notify('LEVEL UP! You are now: '+nr.name,'green');}}
 function checkAchievements(){
   function add(id){if(!(G.earnedBadges||[]).includes(id)){if(!G.earnedBadges)G.earnedBadges=[];G.earnedBadges.push(id);const b=BADGES.find(x=>x.id===id);if(b)notify('\uD83C\uDF86 Badge: '+b.name);}}
-  if((G.completedChapters||[]).length>=1)add('first_briefing');
-  if((G.completedChapters||[]).includes('sept_11'))add('never_forget');
-  if((G.completedChapters||[]).includes('war_on_terror'))add('iron_shield');
-  if((G.completedChapters||[]).includes('iraq_war'))add('desert_storm');
-  if((G.completedChapters||[]).includes('katrina'))add('katrina_badge');
-  if((G.completedChapters||[]).includes('financial_crisis'))add('financial_crisis_badge');
-  if((G.completedChapters||[]).length>=CHAPTERS.length){add('unit_complete');notifyShellComplete();}
+  if((G.chaptersCompleted||[]).length>=1)add('first_briefing');
+  if((G.chaptersCompleted||[]).includes('sept_11'))add('never_forget');
+  if((G.chaptersCompleted||[]).includes('war_on_terror'))add('iron_shield');
+  if((G.chaptersCompleted||[]).includes('iraq_war'))add('desert_storm');
+  if((G.chaptersCompleted||[]).includes('katrina'))add('katrina_badge');
+  if((G.chaptersCompleted||[]).includes('financial_crisis'))add('financial_crisis_badge');
+  if((G.chaptersCompleted||[]).length>=CHAPTERS.length){add('unit_complete');notifyShellComplete();}
   if((G.unlockedCards||[]).length>=CARDS.length)add('historian');
   if((G.score||0)>=1000)add('score_1000');if((G.score||0)>=5000)add('score_5000');if((G.score||0)>=10000)add('score_10000');
   if((G.unlockedCards||[]).length>=5)add('card_collector');
   if((G.momentum||0)/(G.maxMomentum||100)>=0.8)add('high_momentum');
   if(chapterTotal>0&&chapterCorrect===chapterTotal)add('perfect_chapter');
 }
-function checkUnitComplete(){if((G.completedChapters||[]).length>=CHAPTERS.length&&!G._completionShown){G._completionShown=true;save();setTimeout(showCompletionScreen,800);}}
+function checkUnitComplete(){if((G.chaptersCompleted||[]).length>=CHAPTERS.length&&!G._completionShown){G._completionShown=true;save();setTimeout(showCompletionScreen,800);}}
 
 // ── COMPLETION ────────────────────────────────────────────────────────────
 function showCompletionScreen(){
@@ -1327,8 +1322,8 @@ function printCertificate(){
 function openProfile(){
   document.getElementById('profile-avatar-large').innerHTML='<div style="width:90px;height:90px;margin:0 auto">'+renderAvatar(90)+'</div><div style="font-family:var(--playfair);font-size:18px;color:var(--cream);font-style:italic;margin-top:8px">'+G.name+'</div><div style="font-family:var(--dm);font-size:11px;color:var(--teal2)">'+getRank().name+'</div>';
   const acc=G.totalAnswers>0?Math.round(G.correctAnswers/G.totalAnswers*100):0;
-  document.getElementById('profile-stat-grid').innerHTML=[{val:(G.score||0).toLocaleString(),lbl:'Total Score'},{val:'Lv.'+(G.level||1),lbl:'Level'},{val:acc+'%',lbl:'Accuracy'},{val:(G.completedChapters||[]).length+'/'+CHAPTERS.length,lbl:'Chapters'}].map(s=>'<div class="profile-stat"><div class="profile-stat-val">'+s.val+'</div><div class="profile-stat-lbl">'+s.lbl+'</div></div>').join('');
-  document.getElementById('profile-outfit-grid').innerHTML=OUTFITS.map(o=>{const locked=(o.unlockChapter&&!(G.completedChapters||[]).includes(o.unlockChapter))||(o.unlockChapters&&(G.completedChapters||[]).length<o.unlockChapters);return '<div class="outfit-opt '+(G.outfitId===o.id?'selected ':'')+(locked?'locked':'')+'" onclick="equipOutfit(\''+o.id+'\')"><div class="outfit-icon">'+o.icon+'</div><div class="outfit-name">'+o.name+'</div><div class="outfit-cost">'+(locked?'&#128274;':(G.outfitId===o.id?'&#10003; WORN':'EQUIP'))+'</div></div>';}).join('');
+  document.getElementById('profile-stat-grid').innerHTML=[{val:(G.score||0).toLocaleString(),lbl:'Total Score'},{val:'Lv.'+(G.level||1),lbl:'Level'},{val:acc+'%',lbl:'Accuracy'},{val:(G.chaptersCompleted||[]).length+'/'+CHAPTERS.length,lbl:'Chapters'}].map(s=>'<div class="profile-stat"><div class="profile-stat-val">'+s.val+'</div><div class="profile-stat-lbl">'+s.lbl+'</div></div>').join('');
+  document.getElementById('profile-outfit-grid').innerHTML=OUTFITS.map(o=>{const locked=(o.unlockChapter&&!(G.chaptersCompleted||[]).includes(o.unlockChapter))||(o.unlockChapters&&(G.chaptersCompleted||[]).length<o.unlockChapters);return '<div class="outfit-opt '+(G.outfitId===o.id?'selected ':'')+(locked?'locked':'')+'" onclick="equipOutfit(\''+o.id+'\')"><div class="outfit-icon">'+o.icon+'</div><div class="outfit-name">'+o.name+'</div><div class="outfit-cost">'+(locked?'&#128274;':(G.outfitId===o.id?'&#10003; WORN':'EQUIP'))+'</div></div>';}).join('');
   document.getElementById('profile-badge-grid').innerHTML=BADGES.map(b=>{const earned=(G.earnedBadges||[]).includes(b.id);return '<div class="badge-item '+(earned?'earned':'')+'"><div class="badge-item-icon">'+b.icon+'</div><div class="badge-item-name">'+b.name+'</div></div>';}).join('');
   document.getElementById('profile-card-grid').innerHTML=CARDS.map(c=>{const unlocked=(G.unlockedCards||[]).includes(c.id);return '<div class="coll-card '+(unlocked?'unlocked':'')+'"><div class="coll-card-figure">'+c.figure+'</div><div class="coll-card-name">'+(unlocked?c.name:'???')+'</div><div class="coll-card-desc">'+(unlocked?c.desc:'Complete chapters to unlock.')+'</div></div>';}).join('');
   document.getElementById('profile-overlay').classList.add('show');
@@ -1368,9 +1363,9 @@ async function openLeaderboard(){
 // ── SYNC ───────────────────────────────────────────────────────────────────
 async function syncBothDBs(){
   if(!G||!G.name)return;
-  const row={name:G.name,score:G.score||0,level:G.level||1,rank:getRank().name,period:G.period||'',teacher:G.teacher||'',chapters:(G.completedChapters||[]).length,correct_answers:G.correctAnswers||0,total_answers:G.totalAnswers||0,is_teacher:G.isTeacher||false,updated_at:new Date().toISOString(),game:'ground_zero'};
+  const row={name:G.name,score:G.score||0,level:G.level||1,rank:getRank().name,period:G.period||'',teacher:G.teacher||'',chapters:(G.chaptersCompleted||[]).length,correct_answers:G.correctAnswers||0,total_answers:G.totalAnswers||0,is_teacher:G.isTeacher||false,updated_at:new Date().toISOString(),game:'ground_zero'};
   try{await fetch(OLD_SUPA_URL+'/rest/v1/scores?on_conflict=name,period,game',{method:'POST',headers:Object.assign({},OLD_HEADERS,{'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify(row)});}catch(e){}
-  const acRow={name:G.name,unit_id:SHELL_UNIT_ID,score:G.score||0,level:G.level||1,rank:getRank().name,period:G.period||'',teacher:G.teacher||'',chapters_completed:(G.completedChapters||[]).length,total_chapters:CHAPTERS.length,correct_answers:G.correctAnswers||0,total_answers:G.totalAnswers||0,completed:(G.completedChapters||[]).length>=CHAPTERS.length,updated_at:new Date().toISOString()};
+  const acRow={name:G.name,unit_id:SHELL_UNIT_ID,score:G.score||0,level:G.level||1,rank:getRank().name,period:G.period||'',teacher:G.teacher||'',chapters_completed:(G.chaptersCompleted||[]).length,total_chapters:CHAPTERS.length,correct_answers:G.correctAnswers||0,total_answers:G.totalAnswers||0,completed:(G.chaptersCompleted||[]).length>=CHAPTERS.length,updated_at:new Date().toISOString()};
   try{await fetch(AC_SUPA_URL+'/rest/v1/ac_results?on_conflict=name,period,unit_id',{method:'POST',headers:Object.assign({},AC_HEADERS,{'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify(acRow)});}catch(e){}
 }
 
@@ -1383,9 +1378,9 @@ function renderShopItems(){
   const grid=document.getElementById('shop-items-grid');grid.style.display='grid';grid.style.gridTemplateColumns='repeat(3,1fr)';grid.style.gap='8px';
   grid.innerHTML=items.map(item=>{
     const owned=G.shopOwned.includes(item.id)||(item.cat==='Outfits'&&(G.unlockedOutfits||[]).includes(item.id));
-    const mc=!item.reqChapter||(G.completedChapters||[]).includes(item.reqChapter);
+    const mc=!item.reqChapter||(G.chaptersCompleted||[]).includes(item.reqChapter);
     const ms=!item.reqScore||(G.score||0)>=item.reqScore;
-    const ma=!item.reqChapters||(G.completedChapters||[]).length>=item.reqChapters;
+    const ma=!item.reqChapters||(G.chaptersCompleted||[]).length>=item.reqChapters;
     const canBuy=mc&&ms&&ma&&!owned&&(G.gold||0)>=item.cost;
     const locked=!mc||!ms||!ma;
     const equipped=(item.cat==='Hats'&&G.equippedHat===item.id)||(item.cat==='Accessories'&&G.equippedAcc===item.id)||(item.cat==='Outfits'&&G.outfitId===item.id);
@@ -1445,25 +1440,51 @@ function renderTitleScene(){
 })();
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-window.addEventListener('load',function(){
+function showLoginGate(){
+  const sp=getShellProfile();const hasSaved=load()&&G&&G.name;
+  if(hasSaved){showWelcomeGate(G,sp||null);return;}
+  if(sp&&!sp.isTeacher){showWelcomeGate(null,sp);return;}
+  goToStep(1);document.getElementById('code-gate-overlay').style.display='flex';
+}
+
+window.addEventListener('DOMContentLoaded',function(){
   try{renderTitleScene();}catch(e){}
-  let p=0;const bar=document.getElementById('loading-bar');
-  const hard=setTimeout(hideLoading,1500);
-  const iv=setInterval(function(){p+=Math.random()*25;if(p>=100){p=100;if(bar)bar.style.width='100%';clearInterval(iv);clearTimeout(hard);setTimeout(hideLoading,200);return;}if(bar)bar.style.width=p+'%';},80);
+  const sp=getShellProfile();const hasSaved=load()&&G&&G.name;
+  if(hasSaved||(sp&&!sp.isTeacher)){showLoginGate();return;}
+  if(sp&&sp.isTeacher){applyShellProfile(sp);showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);}
 });
-function hideLoading(){
-  const ls=document.getElementById('loading-screen');if(!ls)return;
-  ls.style.transition='opacity 0.4s';ls.style.opacity='0';
-  setTimeout(function(){
-    ls.style.display='none';
-    const sp=getShellProfile();
-    if(sp){
-      if(load()&&G&&G.name&&G.teacher==='shell'){showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);notify('Welcome back, '+G.name+'!','green');}
-      else{applyShellProfile(sp);if(sp.isTeacher){showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);}else{renderAvatarGrid();renderOutfitGridCreator();updateCharPreview();showScreen('char-screen');notify('Welcome, '+sp.name+'! Profile loaded from hub.','green');}}
-      return;
-    }
-    try{if(load()&&G&&G.name){document.getElementById('returning-player-panel').style.display='block';document.getElementById('new-player-panel').style.display='none';document.getElementById('returning-name').textContent=G.name.toUpperCase();document.getElementById('returning-info').textContent='Level '+(G.level||1)+' \u00b7 '+(G.score||0).toLocaleString()+' pts \u00b7 '+(G.completedChapters||[]).length+'/'+CHAPTERS.length+' chapters';}}catch(e){}
-  },420);
+function showWelcomeGate(savedGame,shellProfile){
+  const wg=document.getElementById('welcome-gate');
+  const name=savedGame?savedGame.name:(shellProfile?shellProfile.name:'');
+  const period=savedGame?savedGame.period:(shellProfile?shellProfile.period:'');
+  // Saved game: use its stored avatarId. Shell-only: map shell key to GZ avatar ID.
+  const avId=savedGame?savedGame.avatarId||'scholar_f':shellToAvatar(shellProfile&&shellProfile.avatar);
+  document.getElementById('wg-avatar').innerHTML=getPortraitSVG(avId,60);
+  document.getElementById('wg-name').textContent=name||'Unknown';
+  const pdLabel=period&&!period.startsWith('shell')&&period!=='0'&&period!=='guest'?'Mr. Olson — Period '+period.replace(/.*-/,''):'Guest / Other';
+  document.getElementById('wg-detail').textContent=pdLabel;
+  let progress='No progress saved yet';
+  if(savedGame&&savedGame.chaptersCompleted){const ch=savedGame.chaptersCompleted.length;progress=ch>0?ch+' of '+CHAPTERS.length+' chapters done — '+(savedGame.score||0).toLocaleString()+' pts':'Starting fresh';}
+  document.getElementById('wg-progress').textContent=progress;
+  wg._savedGame=savedGame;wg._shellProfile=shellProfile;wg.style.display='flex';
+}
+function welcomeContinue(){
+  const wg=document.getElementById('welcome-gate');const saved=wg._savedGame;const sp=wg._shellProfile;
+  wg.style.display='none';
+  if(saved){
+    G=saved;
+    // If shell profile has a newer avatar choice, update it
+    if(sp&&sp.avatar)G.avatarId=shellToAvatar(sp.avatar);
+    save();
+  } else if(sp){
+    applyShellProfile(sp);
+  }
+  showGameUI();renderHub();showScreen('hub-screen');setActiveNav(0);notify('Welcome back, '+G.name+'!','green');
+}
+function welcomeNewPlayer(){
+  document.getElementById('welcome-gate').style.display='none';
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  G=null;startNewGame();
 }
 </script>
 </body>
